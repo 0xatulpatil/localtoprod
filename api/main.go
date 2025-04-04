@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"net/http"
 	"sre-goapi/config"
+	"sre-goapi/controllers"
 	"sre-goapi/db"
+	"sre-goapi/handlers"
 	"sre-goapi/models"
 	"sre-goapi/routes"
 
@@ -20,7 +22,10 @@ func main() {
 		fmt.Println("ERROR: Error migrating database")
 	}
 
-	routes.RegisterRoutes(router)
+	studentController := controllers.NewStudentController()
+	studentHandler := handlers.NewStudentHandler(studentController)
+
+	routes.RegisterRoutes(router, studentHandler)
 	router.GET("/healthcheck", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"status": "ok"})
 	})

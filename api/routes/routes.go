@@ -6,12 +6,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func RegisterRoutes(r *gin.Engine) {
+func RegisterRoutes(r *gin.Engine, studentHandler *handlers.StudentHandler) {
 	v1 := r.Group("/v1")
 	{
-		v1.GET("/student/:id", handlers.GetStudent)
-		v1.GET("/student", handlers.GetAllStudents)
-		v1.POST("/student/:id", handlers.UpdateStudentById)
-		v1.DELETE("/student/:id", handlers.DeleteStudentById)
+		v1.GET("/student/:id", studentHandler.GetStudent)
+		v1.GET("/student", studentHandler.GetAllStudents)
+		v1.POST("/student/:id", studentHandler.UpdateStudentById)
+		v1.DELETE("/student/:id", studentHandler.DeleteStudentById)
 	}
 }

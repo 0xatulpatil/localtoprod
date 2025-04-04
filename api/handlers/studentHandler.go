@@ -5,29 +5,40 @@ import (
 	"net/http"
 	"strconv"
 
+	"sre-goapi/controllers"
 	"sre-goapi/models"
 
 	"github.com/gin-gonic/gin"
 )
 
-func GetStudent(c *gin.Context) {
+type StudentHandler struct {
+	studentController *controllers.StudentController
+}
+
+func NewStudentHandler(stdController *controllers.StudentController) *StudentHandler {
+	return &StudentHandler{
+		studentController: stdController,
+	}
+}
+
+func (s *StudentHandler) GetStudent(c *gin.Context) {
 	student := models.Student{Name: "Atul Patil", RollNo: 23, ID: 123}
 	c.IndentedJSON(http.StatusOK, student)
 }
 
-func GetAllStudents(c *gin.Context) {
+func (s *StudentHandler) GetAllStudents(c *gin.Context) {
 	var students []models.Student
 	students = append(students, models.Student{Name: "Atul Patil", RollNo: 23, ID: 123})
 
 	c.IndentedJSON(http.StatusOK, students)
 }
 
-func GetStudentById(c *gin.Context) {
+func (s *StudentHandler) GetStudentById(c *gin.Context) {
 	student := models.Student{Name: "Atul Patil", RollNo: 23, ID: 123}
 	c.IndentedJSON(http.StatusOK, student)
 }
 
-func UpdateStudentById(c *gin.Context) {
+func (s *StudentHandler) UpdateStudentById(c *gin.Context) {
 	students := []models.Student{
 		{Name: "Atul", RollNo: 12, ID: 123},
 		{Name: "Ani", RollNo: 13, ID: 124},
@@ -55,6 +66,6 @@ func UpdateStudentById(c *gin.Context) {
 	c.JSON(http.StatusBadRequest, gin.H{"message": "Student not found"})
 }
 
-func DeleteStudentById(c *gin.Context) {
+func (s *StudentHandler) DeleteStudentById(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Student deleted successfully"})
 }
