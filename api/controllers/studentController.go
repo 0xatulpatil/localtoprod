@@ -53,7 +53,16 @@ func (s *StudentController) GetAllStudents() ([]models.Student, error) {
 	return students, nil
 }
 
-func (s *StudentController) DeleteStudent(studentId string) error {
+func (s *StudentController) GetStudentById(id int) (*models.Student, error) {
+	var student models.Student
+	if err := s.db.First(&student, id); err != nil {
+		return nil, fmt.Errorf("ERROR: cannot find student")
+	}
+
+	return &student, nil
+}
+
+func (s *StudentController) DeleteStudent(studentId int) error {
 	if err := s.db.Delete(&models.Student{}, studentId); err != nil {
 		return err.Error
 	}

@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -21,51 +20,69 @@ func NewStudentHandler(stdController *controllers.StudentController) *StudentHan
 	}
 }
 
-func (s *StudentHandler) GetStudent(c *gin.Context) {
-	student := models.Student{Name: "Atul Patil", RollNo: 23, ID: 123}
+func (s *StudentHandler) GetAllStudents(c *gin.Context) {
+	student, err := s.studentController.GetAllStudents()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrive students"})
+		return
+	}
+
 	c.IndentedJSON(http.StatusOK, student)
 }
 
-func (s *StudentHandler) GetAllStudents(c *gin.Context) {
-	var students []models.Student
-	students = append(students, models.Student{Name: "Atul Patil", RollNo: 23, ID: 123})
-
-	c.IndentedJSON(http.StatusOK, students)
-}
-
 func (s *StudentHandler) GetStudentById(c *gin.Context) {
-	student := models.Student{Name: "Atul Patil", RollNo: 23, ID: 123}
+	idStr := c.Param("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid student ID"})
+		return
+	}
+
+	student, err := s.studentController.GetStudentById(int(id))
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Student not found"})
+		return
+	}
+
 	c.IndentedJSON(http.StatusOK, student)
 }
 
 func (s *StudentHandler) UpdateStudentById(c *gin.Context) {
-	students := []models.Student{
-		{Name: "Atul", RollNo: 12, ID: 123},
-		{Name: "Ani", RollNo: 13, ID: 124},
-		{Name: "Him", RollNo: 14, ID: 125},
-	}
-	id := c.Param("id")
-	studentId, err := strconv.Atoi(id)
+	idStr := c.Param("id")
+	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		fmt.Println("ERROR: error converting id to integer", err)
-	}
-	var updateStudent models.Student
-
-	if err := c.ShouldBindBodyWithJSON(&updateStudent); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid student ID"})
+		return
 	}
 
-	for i := range students {
-		if students[i].ID == studentId {
-			students[i] = updateStudent
-			c.JSON(http.StatusOK, gin.H{"message": "Student Updated", "student": updateStudent})
-			return
-		}
+	var updatedStudent models.Student
+	if err := c.ShouldBindJSON(&updatedStudent); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
+		return
 	}
 
-	c.JSON(http.StatusBadRequest, gin.H{"message": "Student not found"})
+	student, err := s.studentController.UpdateStudent(int(id), &updatedStudent)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update student"})
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, student)
 }
 
 func (s *StudentHandler) DeleteStudentById(c *gin.Context) {
+	idStr := c.Param("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid student ID"})
+		return
+	}
+
+	err = s.studentController.DeleteStudent(int(id))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete student"})
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{"message": "Student deleted successfully"})
 }
