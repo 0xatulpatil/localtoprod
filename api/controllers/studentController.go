@@ -1,8 +1,10 @@
 package controllers
 
 import (
+	"fmt"
 	"sre-goapi/db"
 	"sre-goapi/models"
+	logger "sre-goapi/utils"
 
 	"gorm.io/gorm"
 )
@@ -26,18 +28,21 @@ func (s *StudentController) CreateStudent(name string, roll_no int) (*models.Stu
 
 	res := s.db.Create(student)
 	if res.Error != nil {
+		logger.Error(res.Error)
 		return nil, res.Error
 	}
 
 	return student, nil
 }
 
-func (s *StudentController) UpdateStudent(id string, student *models.Student) (*models.Student, error) {
+func (s *StudentController) UpdateStudent(id int, student *models.Student) (*models.Student, error) {
 	if err := s.db.First(student); err != nil {
+		logger.Error(err.Error)
 		return nil, err.Error
 	}
 
 	if err := s.db.Save(student); err != nil {
+		logger.Error(err.Error)
 		return nil, err.Error
 	}
 	return student, nil
@@ -47,6 +52,7 @@ func (s *StudentController) GetAllStudents() ([]models.Student, error) {
 	var students []models.Student
 	res := s.db.Find(&students)
 	if res.Error != nil {
+		logger.Error(res.Error)
 		return nil, res.Error
 	}
 
@@ -56,6 +62,7 @@ func (s *StudentController) GetAllStudents() ([]models.Student, error) {
 func (s *StudentController) GetStudentById(id int) (*models.Student, error) {
 	var student models.Student
 	if err := s.db.First(&student, id); err != nil {
+		logger.Error(err)
 		return nil, fmt.Errorf("ERROR: cannot find student")
 	}
 
@@ -64,6 +71,7 @@ func (s *StudentController) GetStudentById(id int) (*models.Student, error) {
 
 func (s *StudentController) DeleteStudent(studentId int) error {
 	if err := s.db.Delete(&models.Student{}, studentId); err != nil {
+		logger.Error(err.Error)
 		return err.Error
 	}
 
