@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"fmt"
-	"sre-goapi/db"
 	"sre-goapi/models"
 	logger "sre-goapi/utils"
 
@@ -13,19 +12,13 @@ type StudentController struct {
 	db *gorm.DB // dependency injection
 }
 
-func NewStudentController() *StudentController {
-	appDB := db.GetAppDB()
+func NewStudentController(appDB *gorm.DB) *StudentController {
 	return &StudentController{
 		db: appDB,
 	}
 }
 
-func (s *StudentController) CreateStudent(name string, roll_no int) (*models.Student, error) {
-	student := &models.Student{
-		Name:   name,
-		RollNo: roll_no,
-	}
-
+func (s *StudentController) CreateStudent(student *models.Student) (*models.Student, error) {
 	res := s.db.Create(student)
 	if res.Error != nil {
 		logger.Error(res.Error)

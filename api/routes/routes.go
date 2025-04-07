@@ -11,6 +11,7 @@ func RegisterRoutes(r *gin.Engine, studentHandler *handlers.StudentHandler) {
 	{
 		v1.GET("/student/:id", studentHandler.GetStudentById)
 		v1.GET("/student", studentHandler.GetAllStudents)
+		v1.POST("/student", studentHandler.CreateStudent)
 		v1.POST("/student/:id", studentHandler.UpdateStudentById)
 		v1.DELETE("/student/:id", studentHandler.DeleteStudentById)
 	}

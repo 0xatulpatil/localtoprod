@@ -6,6 +6,7 @@ import (
 
 	"sre-goapi/controllers"
 	"sre-goapi/models"
+	logger "sre-goapi/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -28,6 +29,19 @@ func (s *StudentHandler) GetAllStudents(c *gin.Context) {
 	}
 
 	c.IndentedJSON(http.StatusOK, student)
+}
+
+func (s *StudentHandler) CreateStudent(c *gin.Context) {
+	var newStudent models.Student
+	if err := c.ShouldBindJSON(&newStudent); err != nil {
+		logger.Error("Invalid Request body for creating student")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid Request body"})
+	}
+
+	_, err := s.studentController.CreateStudent(&newStudent)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid"})
+	}
 }
 
 func (s *StudentHandler) GetStudentById(c *gin.Context) {
