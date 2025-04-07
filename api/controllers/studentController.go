@@ -29,12 +29,12 @@ func (s *StudentController) CreateStudent(student *models.Student) (*models.Stud
 }
 
 func (s *StudentController) UpdateStudent(id int, student *models.Student) (*models.Student, error) {
-	if err := s.db.First(student); err != nil {
+	if err := s.db.First(&models.Student{}, id); err.Error != nil {
 		logger.Error(err.Error)
 		return nil, err.Error
 	}
 
-	if err := s.db.Save(student); err != nil {
+	if err := s.db.Save(student); err.Error != nil {
 		logger.Error(err.Error)
 		return nil, err.Error
 	}
@@ -54,8 +54,9 @@ func (s *StudentController) GetAllStudents() ([]models.Student, error) {
 
 func (s *StudentController) GetStudentById(id int) (*models.Student, error) {
 	var student models.Student
-	if err := s.db.First(&student, id); err != nil {
-		logger.Error(err)
+	fmt.Print(id)
+	if err := s.db.First(&student, id); err.Error != nil {
+		logger.Error(err.Error)
 		return nil, fmt.Errorf("ERROR: cannot find student")
 	}
 
@@ -63,7 +64,7 @@ func (s *StudentController) GetStudentById(id int) (*models.Student, error) {
 }
 
 func (s *StudentController) DeleteStudent(studentId int) error {
-	if err := s.db.Delete(&models.Student{}, studentId); err != nil {
+	if err := s.db.Delete(&models.Student{}, studentId); err.Error != nil {
 		logger.Error(err.Error)
 		return err.Error
 	}

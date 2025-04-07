@@ -74,14 +74,20 @@ func (s *StudentHandler) UpdateStudentById(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
 		return
 	}
+	logger.Warn(updatedStudent.Name, updatedStudent.ID)
 
-	student, err := s.studentController.UpdateStudent(int(id), &updatedStudent)
+	if id != updatedStudent.ID {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "StudentId does not match"})
+		return
+	}
+
+	_, err = s.studentController.UpdateStudent(int(id), &updatedStudent)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update student"})
 		return
 	}
 
-	c.IndentedJSON(http.StatusOK, student)
+	c.IndentedJSON(http.StatusOK, updatedStudent)
 }
 
 func (s *StudentHandler) DeleteStudentById(c *gin.Context) {

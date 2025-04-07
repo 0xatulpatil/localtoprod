@@ -24,7 +24,7 @@ func main() {
 		fmt.Println("ERROR: Error migrating database")
 	}
 
-	studentController := controllers.NewStudentController()
+	studentController := controllers.NewStudentController(appDB)
 	studentHandler := handlers.NewStudentHandler(studentController)
 
 	routes.RegisterRoutes(router, studentHandler)
