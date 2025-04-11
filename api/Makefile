@@ -12,3 +12,6 @@ docker-run:
 # Clean up (optional)
 docker-clean:
 	docker rmi $(APP_NAME):$(VERSION)
+	
+run: 
+	docker-compose up --build
