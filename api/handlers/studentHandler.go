@@ -42,6 +42,10 @@ func (s *StudentHandler) CreateStudent(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid"})
 	}
+
+	c.JSON(http.StatusCreated, gin.H{
+		"message": "student created successfully",
+	})
 }
 
 func (s *StudentHandler) GetStudentById(c *gin.Context) {
@@ -74,7 +78,6 @@ func (s *StudentHandler) UpdateStudentById(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
 		return
 	}
-	logger.Warn(updatedStudent.Name, updatedStudent.ID)
 
 	if id != updatedStudent.ID {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "StudentId does not match"})
