@@ -18,3 +18,6 @@ run:
 	
 test: 
 	go test ./routes
+	
+lint:
+	golangci-lint run
