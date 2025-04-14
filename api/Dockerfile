@@ -18,6 +18,7 @@ RUN go build -o app .
 FROM alpine:latest
 
 RUN apk add --no-cache ca-certificates sqlite-libs
+RUN apk add --no-cache curl
 
 WORKDIR /app
 

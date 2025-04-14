@@ -11,3 +11,9 @@ services:
     env_file:
       - .env.local
     restart: unless-stopped
+    healthcheck:
+      test: curl --fail http://localhost:8080/healthcheck || exit 1
+      interval: 5m
+      timeout: 3s
+      retries: 3
+      start_period: 10s
