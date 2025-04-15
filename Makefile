@@ -36,4 +36,4 @@ lint:
 	golangci-lint run
 	
 build: 
-	go build -o bin/app main.go
+	go build -o app . 
