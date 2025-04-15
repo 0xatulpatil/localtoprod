@@ -51,7 +51,7 @@ jobs:
           context: .
           push: ${{ github.event_name == 'push' }}
           tags: |
-            yourusername/yourimage:latest
-            yourusername/yourimage:${{ github.sha }}
+            0xatulpatil/sre-go-api:latest
+            0xatulpatil/sre-go-api:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
